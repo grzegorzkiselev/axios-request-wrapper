@@ -1,4 +1,4 @@
-import axios, { AxiosPromise, AxiosResponse } from "axios";
+import axios, { AxiosPromise, AxiosResponse, AxiosError } from "axios";
 
 const onNetworkError = (error) => {
   console.error("NETWORK ERROR", error instanceof Error ? error.message : error);
@@ -14,35 +14,30 @@ const roulette = (item) => {
   return item.title;
 };
 
-interface TypedThen<T> extends AxiosResponse {
-  then(): Awaited<T>;
-}
-
-const catchErrorOnPromise = <P extends Promise<AxiosResponse>>(promise: P): TypedThen<P> => {
+const getDataFromRequest = <P extends Promise<AxiosResponse>>
+  (promise: P): Promise<Awaited<P>["data"]> | Promise<AxiosError> => {
   return promise
-    .then(({ data }) => {
-      return data;
-    })
+    .then(({ data }) => data)
     .catch((error) => {
-      onNetworkError(error);
-      return error;
+      onNetworkError(error); return error;
     });
 };
 
-// const data = axios.get<{ title: string }[]>("");
-// type aw = Awaited<typeof data>
-// type dt = aw["data"]
-
-catchErrorOnPromise(
-  axios.get<{ title: string }[]>("")
+// https://jsonplaceholder.typicode.com/todos
+getDataFromRequest(
+  axios.get<{ title: string }[]>("https://jsonplaceholder.typicode.com/todos")
 )
   .then((result) => {
+    if (result instanceof AxiosError) {
+      throw result;
+    }
+
     try {
-      result.data.map(roulette);
+      result.map(roulette);
     } catch(error) {
       console.error("MAPPING ERROR", error instanceof Error ? error.message : error);
     }
   })
   .catch((error) => {
-    console.warn("REQUEST FAILED WITH ERROR:", error);
+    console.warn("REQUEST FAILED WITH ERROR:", error.message);
   });
