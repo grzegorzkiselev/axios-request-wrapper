@@ -15,29 +15,61 @@ const roulette = (item) => {
 };
 
 const getDataFromRequest = <P extends Promise<AxiosResponse>>
-  (promise: P): Promise<Awaited<P>["data"]> | Promise<AxiosError> => {
+(promise: P): Promise<Awaited<P>["data"]> | never => {
   return promise
-    .then(({ data }) => data)
-    .catch((error) => {
-      onNetworkError(error); return error;
-    });
+  .then(({ data }) => data)
+  .catch((error) => {
+    onNetworkError(error);
+    throw error;
+  });
+};
+
+const retryRequest = <T>(timeout, retryCount, retryDelay, retryDelayIncrement, requester: T): Promise<Awaited<ReturnType<T>>> => {
+  return new Promise((resolve, reject) => {
+    const step = () => {
+      const time = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new Error("timeout exeeded"));
+        }, timeout);
+      });
+
+      Promise.race([
+        requester(),
+        time
+      ])
+      .then(resolve)
+      .catch((error) => {
+        if (retryCount--) {
+          console.table({
+            "rc": { "value": retryCount },
+            "rd": { "value": retryDelay }
+          });
+          retryDelay += retryDelayIncrement;
+          setTimeout(step, retryDelay);
+        } else {
+          reject(error);
+        }
+      });
+    };
+
+    step();
+  });
 };
 
 // https://jsonplaceholder.typicode.com/todos
-getDataFromRequest(
-  axios.get<{ title: string }[]>("https://jsonplaceholder.typicode.com/todos")
-)
-  .then((result) => {
-    if (result instanceof AxiosError) {
-      throw result;
-    }
-
-    try {
-      result.map(roulette);
-    } catch(error) {
-      console.error("MAPPING ERROR", error instanceof Error ? error.message : error);
-    }
-  })
-  .catch((error) => {
-    console.warn("REQUEST FAILED WITH ERROR:", error.message);
-  });
+retryRequest(2000, 5, 500, 1000, () => {
+  return getDataFromRequest(
+    axios.get<{ title: string }[]>("https://jsonplaceholder.typicode.com/todos")
+  );
+})
+.then((result) => {
+  try {
+    return result.map(roulette);
+  } catch(error) {
+    console.error("MAPPING ERROR", error instanceof Error ? error.message : error);
+    throw error;
+  }
+})
+.catch((error) => {
+  console.error("REQUEST FAILED WITH ERROR", error.message);
+});
