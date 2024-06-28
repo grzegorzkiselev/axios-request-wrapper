@@ -24,18 +24,18 @@ const getDataFromRequest = <P extends Promise<AxiosResponse>>
   });
 };
 
-const retryRequest = <T>(timeout, retryCount, retryDelay, retryDelayIncrement, requester: T): Promise<Awaited<ReturnType<T>>> => {
+const retryRequest = <T extends (...args: any[]) => Promise<any>>(timeout: number, retryCount: number, retryDelay: number, retryDelayIncrement: number, requester: T): Promise<Awaited<ReturnType<T>>> => {
   return new Promise((resolve, reject) => {
-    const step = () => {
-      const time = new Promise((_, reject) => {
+    const tryRequest = () => {
+      const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => {
-          reject(new Error("timeout exeeded"));
+          reject(new Error("Timeout Exeeded"));
         }, timeout);
       });
 
       Promise.race([
         requester(),
-        time
+        timeoutPromise
       ])
       .then(resolve)
       .catch((error) => {
@@ -45,19 +45,19 @@ const retryRequest = <T>(timeout, retryCount, retryDelay, retryDelayIncrement, r
             "rd": { "value": retryDelay }
           });
           retryDelay += retryDelayIncrement;
-          setTimeout(step, retryDelay);
+          setTimeout(tryRequest, retryDelay);
         } else {
           reject(error);
         }
       });
     };
 
-    step();
+    tryRequest();
   });
 };
 
 // https://jsonplaceholder.typicode.com/todos
-retryRequest(2000, 5, 500, 1000, () => {
+retryRequest(2, 5, 500, 1000, () => {
   return getDataFromRequest(
     axios.get<{ title: string }[]>("https://jsonplaceholder.typicode.com/todos")
   );
