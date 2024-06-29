@@ -1,8 +1,4 @@
-import axios, { AxiosPromise, AxiosResponse, AxiosError } from "axios";
-
-const onNetworkError = (error) => {
-  console.error("NETWORK ERROR", error instanceof Error ? error.message : error);
-};
+import axios, { AxiosError, AxiosPromise, AxiosResponse } from "axios";
 
 const roulette = (item) => {
   const youReDead = Math.floor(Math.random() * 6) === 0;
@@ -14,62 +10,148 @@ const roulette = (item) => {
   return item.title;
 };
 
-const getDataFromRequest = <P extends Promise<AxiosResponse>>
-(promise: P): Promise<Awaited<P>["data"]> | never => {
-  return promise
-  .then(({ data }) => data)
-  .catch((error) => {
-    onNetworkError(error);
-    throw error;
-  });
+const onNetworkError = (error) => {
+  console.error("NETWORK ERROR", error instanceof Error ? error.message : error);
 };
 
-const retryRequest = <T extends (...args: any[]) => Promise<any>>(timeout: number, retryCount: number, retryDelay: number, retryDelayIncrement: number, requester: T): Promise<Awaited<ReturnType<T>>> => {
-  return new Promise((resolve, reject) => {
-    const tryRequest = () => {
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => {
-          reject(new Error("Timeout Exeeded"));
-        }, timeout);
-      });
-
-      Promise.race([
-        requester(),
-        timeoutPromise
-      ])
-      .then(resolve)
-      .catch((error) => {
-        if (retryCount--) {
-          console.table({
-            "rc": { "value": retryCount },
-            "rd": { "value": retryDelay }
+const doRequest =
+  <T extends () => Promise<AxiosResponse<Awaited<ReturnType<T>>["data"]>>>
+  ({ retryCount, retryDelay }: { retryCount: number, retryDelay: number }, requester: T)
+  : Promise<Awaited<ReturnType<T>>["data"]> => {
+    return new Promise((resolve, reject) => {
+      const tryRequest = () => {
+        requester()
+          .then(({ data }) => resolve(data))
+          .catch((error) => {
+            if (retryCount--) {
+              console.table({
+                "rc": { "value": retryCount },
+                "rd": { "value": retryDelay }
+              });
+              retryDelay += retryDelay;
+              setTimeout(tryRequest, retryDelay);
+            } else {
+              onNetworkError(error);
+              if (error instanceof AxiosError) {
+                return reject(new Error(error.code));
+              } else {
+                return reject(error);
+              }
+            }
           });
-          retryDelay += retryDelayIncrement;
-          setTimeout(tryRequest, retryDelay);
-        } else {
-          reject(error);
-        }
-      });
-    };
+      };
 
-    tryRequest();
+      tryRequest();
+    });
+  };
+
+const executeForceTimeout = (timeout: number) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject(new Error("Timeout Exeeded"));
+    }, timeout);
+
+    setTimeout(() => {
+      resolve(0);
+    });
   });
 };
 
-// https://jsonplaceholder.typicode.com/todos
-retryRequest(2, 5, 500, 1000, () => {
-  return getDataFromRequest(
-    axios.get<{ title: string }[]>("https://jsonplaceholder.typicode.com/todos")
-  );
-})
-.then((result) => {
-  try {
-    return result.map(roulette);
-  } catch(error) {
-    console.error("MAPPING ERROR", error instanceof Error ? error.message : error);
-    throw error;
-  }
-})
-.catch((error) => {
-  console.error("REQUEST FAILED WITH ERROR", error.message);
-});
+doRequest(
+  { retryCount: 5, retryDelay: 500 },
+  () => {
+    return executeForceTimeout(1)
+      .then(() => {
+        return axios.get<{ title: string }[]>("https://jsonplaceholder.typicode.com/todos");
+      });
+  })
+  .then((result) => {
+    try {
+      return result.map(roulette);
+    } catch(error) {
+      console.error("MAPPING ERROR", error instanceof Error ? error.message : error);
+      throw error;
+    }
+  })
+  .catch((error) => {
+    console.error("REQUEST FAILED WITH ERROR", error.message);
+  });
+
+// const getDataFromRequest = <P extends Promise<AxiosResponse>>
+//   (promise: P): Promise<Awaited<P>["data"]> | never => {
+//   return promise
+//     .then(({ data }) => data)
+//     .catch((error) => {
+//       onNetworkError(error);
+//       throw error;
+//     });
+// };
+
+// const retryRequest = <T extends (...args: any[]) => Promise<any>>(timeout: number, retryCount: number, retryDelay: number, retryDelayIncrement: number, requester: T): Promise<Awaited<ReturnType<T>>> => {
+//   return new Promise((resolve, reject) => {
+//     const tryRequest = () => {
+//       const timeoutPromise = new Promise((_, reject) => {
+//         setTimeout(() => {
+//           reject(new Error("Timeout Exeeded"));
+//         }, timeout);
+//       });
+
+//       Promise.race([
+//         requester(),
+//         timeoutPromise
+//       ])
+//         .then(resolve)
+//         .catch((error) => {
+//           if (retryCount--) {
+//             console.table({
+//               "rc": { "value": retryCount },
+//               "rd": { "value": retryDelay }
+//             });
+//             retryDelay += retryDelayIncrement;
+//             setTimeout(tryRequest, retryDelay);
+//           } else {
+//             reject(error);
+//           }
+//         });
+//     };
+
+//     tryRequest();
+//   });
+// };
+
+// // https://jsonplaceholder.typicode.com/todos
+// retryRequest(2, 5, 500, 1000, () => {
+//   return getDataFromRequest(
+//     axios.get<{ title: string }[]>("https://jsonplaceholder.typicode.com/todos")
+//   );
+// })
+//   .then((result) => {
+//     try {
+//       return result.map(roulette);
+//     } catch(error) {
+//       console.error("MAPPING ERROR", error instanceof Error ? error.message : error);
+//       throw error;
+//     }
+//   })
+//   .catch((error) => {
+//     console.error("REQUEST FAILED WITH ERROR", error.message);
+//   });
+
+// type TDoRequest = (
+//   <T extends (...args: any[]) => Promise<any>>(
+//     options: {
+//       requestDelay: number,
+//     },
+//     requester: (...args: any[]) => Promise<any>
+//   ) => Promise<Awaited<ReturnType<T>>>
+// )
+
+// doRequest(
+//   {
+//     retryCount,
+//     retryDelay,
+//   },
+//   () => {
+//     axios.get("");
+//   }
+// );
