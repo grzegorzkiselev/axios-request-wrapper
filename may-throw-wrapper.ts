@@ -1,16 +1,16 @@
-import axios, { AxiosError, AxiosPromise, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
-const roulette = (item) => {
+const roulette = (item: { title: string }) => {
   const youReDead = Math.floor(Math.random() * 6) === 0;
 
   if (youReDead) {
-    throw new Error("Bad luck on item with title " + item.title + " :—(");
+    throw new Error("Bad luck on the item with title " + item.title + " :—(");
   }
 
   return item.title;
 };
 
-const onNetworkError = (error) => {
+const onNetworkError = (error: Error) => {
   console.error("NETWORK ERROR", error instanceof Error ? error.message : error);
 };
 
