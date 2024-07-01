@@ -27,7 +27,7 @@ const doRequest =
     return requester()
       .then(({ data }) => data)
       .catch((error) => {
-        if (retryCount--) {
+        if (retryCount-- > 0) {
           const retryDelay = Math.random() * (maxRetryDelay - minRetryDelay) + minRetryDelay;
           console.table({
             "Retry Number": { "Value": retryCount },
