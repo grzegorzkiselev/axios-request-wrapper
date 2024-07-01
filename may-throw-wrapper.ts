@@ -18,17 +18,17 @@ const pause = (milliseconds: number) => new Promise((resolve) => setTimeout(reso
 
 const doRequest =
 <T extends () => Promise<AxiosResponse<Awaited<ReturnType<T>>["data"]>>>
-(requester: T, retryCount = 0)
+  (requester: T, { retryCount = 0 }: { retryCount: number })
 : Promise<Awaited<ReturnType<T>>["data"]> => {
-  const max = 1000;
-  const min = 200;
+  const maxRetryDelay = 1000;
+  const minRetryDelay = 200;
 
   const tryRequest = (): Promise<Awaited<ReturnType<T>>["data"]> => {
     return requester()
       .then(({ data }) => data)
       .catch((error) => {
         if (retryCount--) {
-          const retryDelay = Math.random() * (max - min) + min;
+          const retryDelay = Math.random() * (maxRetryDelay - minRetryDelay) + minRetryDelay;
           console.table({
             "Retry Number": { "Value": retryCount },
             "Retry Delay": { "Value": retryDelay },
@@ -50,7 +50,7 @@ const doRequest =
 
 doRequest(
   () => axios.get<{ title: string }[]>("https://jsonplaceholder.typicode.com/todos"),
-  5,
+  { retryCount: 5 },
 )
 .then((result) => {
   try {
