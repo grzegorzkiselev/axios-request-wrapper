@@ -21,16 +21,19 @@ class ServiceAxios {
         }
       }
     );
-  }
+  };
 }
 
-let serviceAxios: null | ServiceAxios = null;
-export const getServiceAxios = () => {
-  return (
-    serviceAxios
-    || (serviceAxios = new ServiceAxios(axios))
-  );
-};
+export const getServiceAxios = (() => {
+  let serviceAxios: null | ServiceAxios = null;
+
+  return () => {
+    return (
+      serviceAxios
+      || (serviceAxios = new ServiceAxios(axios))
+    );
+  };
+})();
 
 getServiceAxios().get("https://google.com")
   .then(({ config }) => console.log(config.headers));
