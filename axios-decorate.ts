@@ -10,8 +10,7 @@ class ServiceAxios {
     this.instance = axiosInstance;
   }
 
-  /** @type { this.#instance.get } */
-  get(url, options = {}) {
+  get: typeof this.instance.get = (url, options = {}) => {
     return this.instance.get(
       url,
       {
