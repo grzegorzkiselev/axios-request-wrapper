@@ -1,23 +1,23 @@
 import axios, { AxiosHeaders, AxiosStatic } from "axios";
 
 class ServiceAxios {
-  readonly #instance: AxiosStatic;
-  readonly #defaultHeaders = new AxiosHeaders(
+  private readonly instance: AxiosStatic;
+  private readonly defaultHeaders = new AxiosHeaders(
     { "TestHeader": "test" }
   );
 
   constructor(axiosInstance: AxiosStatic) {
-    this.#instance = axiosInstance;
+    this.instance = axiosInstance;
   }
 
   /** @type { this.#instance.get } */
   get(url, options = {}) {
-    return this.#instance.get(
+    return this.instance.get(
       url,
       {
         ...options,
         headers: {
-          ...this.#defaultHeaders,
+          ...this.defaultHeaders,
           ...options.header,
         }
       }
