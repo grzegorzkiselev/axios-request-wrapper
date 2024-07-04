@@ -1,15 +1,14 @@
-import { getServiceAxios } from "./axios-decorate";
 import { AxiosError, AxiosResponse } from "axios";
 
-const roulette = (item: { title: string }) => {
-  const youReDead = Math.floor(Math.random() * 6) === 0;
+// const roulette = (item: { title: string }) => {
+//   const youReDead = Math.floor(Math.random() * 6) === 0;
 
-  if (youReDead) {
-    throw new Error("Bad luck on the item with title " + item.title + " :—(");
-  }
+//   if (youReDead) {
+//     throw new Error("Bad luck on the item with title " + item.title + " :—(");
+//   }
 
-  return item.title;
-};
+//   return item.title;
+// };
 
 const onNetworkError = (error: Error) => {
   console.error("NETWORK ERROR", error instanceof Error ? error.message : error);

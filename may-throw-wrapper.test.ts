@@ -1,9 +1,24 @@
 import { expect, it, jest } from "@jest/globals";
 import { doRequest } from "./may-throw-wrapper";
 import { getServiceAxios } from "./axios-decorate";
+import { mockNode } from "./mocks/node";
+
+mockNode();
+
+it("Успешный запрос возвращает заданный ответ",  async () => {
+  await expect(
+    doRequest(() => getServiceAxios().get("https://api.com/ok")),
+  ).resolves.toHaveLength(4);
+});
+
+it("Сломанная апи возвращает реджект", async () => {
+  await expect(
+    doRequest(() => getServiceAxios().get("https://api.com/notok")),
+  ).rejects.toThrowError("BAD");
+});
 
 it("При ошибке выполняется нужное количество раз", async () => {
-  const mockFuncWithError = jest.fn(() => getServiceAxios().get(""));
+  const mockFuncWithError = jest.fn(() => getServiceAxios().get("https://api.com/notok"));
   const retryCount = 5;
 
   try {
@@ -17,7 +32,7 @@ it("При ошибке выполняется нужное количество
 });
 
 it("Выполняется один раз, если количество попыток не задано", async () => {
-  const mockFuncWithError = jest.fn(() => getServiceAxios().get(""));
+  const mockFuncWithError = jest.fn(() => getServiceAxios().get("https://api.com/notok"));
 
   try {
     await doRequest(
@@ -29,7 +44,7 @@ it("Выполняется один раз, если количество поп
 });
 
 it("Выполняется один раз, если ошибки не произошло", async () => {
-  const mockFuncWithoutError = jest.fn(() => getServiceAxios().get("https://google.com"));
+  const mockFuncWithoutError = jest.fn(() => getServiceAxios().get("https://api.com/ok"));
 
   try {
     await doRequest(
