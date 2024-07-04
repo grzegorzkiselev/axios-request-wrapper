@@ -16,9 +16,9 @@ const onNetworkError = (error: Error) => {
 
 const pause = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
-const doRequest =
+export const doRequest =
 <T extends () => Promise<AxiosResponse<Awaited<ReturnType<T>>["data"]>>>
-  (requester: T, { retryCount = 0 }: { retryCount: number })
+  (requester: T, { retryCount = 0 } = {})
 : Promise<Awaited<ReturnType<T>>["data"]> => {
   const maxRetryDelay = 1000;
   const minRetryDelay = 200;
@@ -47,7 +47,7 @@ const doRequest =
 
   return tryRequest();
 };
-
+/*
 doRequest(
   () => axios.get<{ title: string }[]>("https://jsonplaceholder.typicode.com/todos"),
   { retryCount: 5 },
@@ -63,3 +63,4 @@ doRequest(
 .catch((error) => {
   console.error("REQUEST FAILED WITH ERROR", error.message);
 });
+*/

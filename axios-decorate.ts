@@ -34,9 +34,10 @@ export const getServiceAxios = (() => {
     );
   };
 })();
-
+/*
 getServiceAxios().get("https://google.com")
   .then(({ config }) => console.log(config.headers));
 
 getServiceAxios().get("https://yandex.com")
   .then(({ config }) => console.log(config.headers));
+*/
