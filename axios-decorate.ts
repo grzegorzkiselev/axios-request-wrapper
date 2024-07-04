@@ -3,7 +3,7 @@ import axios, { AxiosHeaders, AxiosStatic } from "axios";
 class ServiceAxios {
   private readonly instance: AxiosStatic;
   private readonly defaultHeaders = new AxiosHeaders(
-    { "TestHeader": "test" }
+    { "TestHeader": "test" },
   );
 
   constructor(axiosInstance: AxiosStatic) {
@@ -17,9 +17,9 @@ class ServiceAxios {
         ...options,
         headers: {
           ...this.defaultHeaders,
-          ...options.header,
-        }
-      }
+          ...options?.headers,
+        },
+      },
     );
   };
 }
@@ -27,17 +27,12 @@ class ServiceAxios {
 export const getServiceAxios = (() => {
   let serviceAxios: null | ServiceAxios = null;
 
-  return () => {
-    return (
-      serviceAxios
-      || (serviceAxios = new ServiceAxios(axios))
-    );
-  };
+  return () => serviceAxios
+  || (serviceAxios = new ServiceAxios(axios));
 })();
-/*
-getServiceAxios().get("https://google.com")
-  .then(({ config }) => console.log(config.headers));
 
-getServiceAxios().get("https://yandex.com")
-  .then(({ config }) => console.log(config.headers));
-*/
+// getServiceAxios().get("https://google.com")
+//   .then(({ config }) => console.log(config.headers));
+
+// getServiceAxios().get("https://yandex.com")
+//   .then(({ config }) => console.log(config.headers));

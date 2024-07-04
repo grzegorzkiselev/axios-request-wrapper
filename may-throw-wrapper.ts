@@ -1,4 +1,5 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import { getServiceAxios } from "./axios-decorate";
+import { AxiosError, AxiosResponse } from "axios";
 
 const roulette = (item: { title: string }) => {
   const youReDead = Math.floor(Math.random() * 6) === 0;
@@ -29,10 +30,6 @@ export const doRequest =
       .catch((error) => {
         if (retryCount-- > 0) {
           const retryDelay = Math.random() * (maxRetryDelay - minRetryDelay) + minRetryDelay;
-          console.table({
-            "Retry Number": { "Value": retryCount },
-            "Retry Delay": { "Value": retryDelay },
-          });
           return pause(retryDelay).then(tryRequest);
         } else {
           onNetworkError(error);
@@ -47,20 +44,19 @@ export const doRequest =
 
   return tryRequest();
 };
-/*
-doRequest(
-  () => axios.get<{ title: string }[]>("https://jsonplaceholder.typicode.com/todos"),
-  { retryCount: 5 },
-)
-.then((result) => {
-  try {
-    return result.map(roulette);
-  } catch(error) {
-    console.error("MAPPING ERROR", error instanceof Error ? error.message : error);
-    throw error;
-  }
-})
-.catch((error) => {
-  console.error("REQUEST FAILED WITH ERROR", error.message);
-});
-*/
+
+// doRequest(
+//   () => getServiceAxios().get<{ title: string }[]>("https://jsonplaceholder.typicode.com/todos"),
+//   { retryCount: 5 },
+// )
+// .then((result) => {
+//   try {
+//     return result.map(roulette);
+//   } catch(error) {
+//     console.error("MAPPING ERROR", error instanceof Error ? error.message : error);
+//     throw error;
+//   }
+// })
+// .catch((error) => {
+//   console.error("REQUEST FAILED WITH ERROR", error.message);
+// })
