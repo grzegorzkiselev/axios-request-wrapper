@@ -16,7 +16,7 @@ const onNetworkError = (error: Error) => {
 
 const pause = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
-export const doRequest =
+export const doRequestWithRetry =
 <T extends () => Promise<AxiosResponse<Awaited<ReturnType<T>>["data"]>>>
   (requester: T, { retryCount = 0 } = {})
 : Promise<Awaited<ReturnType<T>>["data"]> => {

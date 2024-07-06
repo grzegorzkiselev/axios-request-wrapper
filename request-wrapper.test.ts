@@ -1,19 +1,19 @@
 import { expect, it, jest } from "@jest/globals";
-import { doRequest } from "./may-throw-wrapper";
-import { getServiceAxios } from "./axios-decorate";
+import { doRequestWithRetry } from "./request-wrapper";
+import { getServiceAxios } from "./service-axios";
 import { mockNode } from "./mocks/node";
 
 mockNode();
 
 it("Успешный запрос возвращает заданный ответ",  async () => {
   await expect(
-    doRequest(() => getServiceAxios().get("https://api.com/ok")),
+    doRequestWithRetry(() => getServiceAxios().get("https://api.com/ok")),
   ).resolves.toHaveLength(4);
 });
 
 it("Сломанная апи возвращает реджект", async () => {
   await expect(
-    doRequest(() => getServiceAxios().get("https://api.com/notok")),
+    doRequestWithRetry(() => getServiceAxios().get("https://api.com/notok")),
   ).rejects.toThrowError("BAD");
 });
 
@@ -22,7 +22,7 @@ it("При ошибке выполняется нужное количество
   const retryCount = 5;
 
   try {
-    await doRequest(
+    await doRequestWithRetry(
       mockFuncWithError,
       { retryCount },
     );
@@ -35,7 +35,7 @@ it("Выполняется один раз, если количество поп
   const mockFuncWithError = jest.fn(() => getServiceAxios().get("https://api.com/notok"));
 
   try {
-    await doRequest(
+    await doRequestWithRetry(
       mockFuncWithError,
     );
   } catch(_) {
@@ -47,7 +47,7 @@ it("Выполняется один раз, если ошибки не прои�
   const mockFuncWithoutError = jest.fn(() => getServiceAxios().get("https://api.com/ok"));
 
   try {
-    await doRequest(
+    await doRequestWithRetry(
       mockFuncWithoutError,
     );
   } catch(_) {
