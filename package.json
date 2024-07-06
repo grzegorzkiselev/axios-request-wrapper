@@ -4,6 +4,9 @@
   "main": "may-throw-wrapper.js",
   "type": "module",
   "keywords": [],
+  "scripts": {
+    "test": "jest"
+  },
   "author": "",
   "license": "ISC",
   "description": "",
