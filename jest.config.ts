@@ -5,6 +5,9 @@
 
 import type { Config } from "jest";
 
+// rootDir: __dirname,
+// setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+
 const config: Config = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -124,7 +127,7 @@ const config: Config = {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  // rootDir: undefined,
+  rootDir: __dirname,
 
   // A list of paths to directories that Jest should use to search for files in
   // roots: [
@@ -138,7 +141,7 @@ const config: Config = {
   // setupFiles: [],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  // setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
