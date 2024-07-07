@@ -4,6 +4,7 @@ const config: Config = {
   clearMocks: true,
   collectCoverage: true,
   coverageDirectory: "coverage",
+  coverageReporters: ["json", "html"],
   coverageProvider: "v8",
   preset: "ts-jest",
   testEnvironment: "node",
