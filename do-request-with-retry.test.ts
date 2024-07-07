@@ -47,16 +47,24 @@ describe("Tecты попыток", () => {
   //   expect(mockFuncWithError.mock.calls.length).toBe(1 + 1);
   // });
 
-  class Response implements AxiosResponse {
-    data = "succeed";
-    status = 200;
-    statusText = "";
-    headers = {};
-    config = { headers: new AxiosHeaders() }
+  //class Response implements AxiosResponse {
+  //  data = "succeed";
+  //  status = 200;
+  //  statusText = "";
+  //  headers = {};
+  //  config = { headers: new AxiosHeaders() }
+  //}
+
+  const Response: AxiosResponse = {
+    data: "succeed",
+    status: 200,
+    statusText: "",
+    headers: {},
+    config: { headers: new AxiosHeaders() },
   }
 
   it("Успешно выполняется после ошибок", async () => {
-    const cb = () => Promise.resolve(new Response());
+    const cb = () => Promise.resolve(Response);
 
     const mockFuncWithError = jest.fn(cb);
 
