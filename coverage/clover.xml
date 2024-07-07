@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1720361951381" clover="3.2.0">
-  <project timestamp="1720361951381" name="All files">
+<coverage generated="1720365510630" clover="3.2.0">
+  <project timestamp="1720365510631" name="All files">
     <metrics statements="185" coveredstatements="181" conditionals="33" coveredconditionals="28" methods="11" coveredmethods="11" elements="229" coveredelements="220" complexity="0" loc="185" ncloc="185" packages="2" files="7" classes="7"/>
-    <package name="request-wrapper">
+    <package name="may-throw-wrapper_2">
       <metrics statements="144" coveredstatements="140" conditionals="32" coveredconditionals="27" methods="11" coveredmethods="11"/>
-      <file name="abstract-api.ts" path="/Users/grzegorz/Documents/Code/playground/request-wrapper/abstract-api.ts">
+      <file name="abstract-api.ts" path="/data/data/com.termux/files/home/playground/may-throw-wrapper_2/abstract-api.ts">
         <metrics statements="10" coveredstatements="10" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -17,7 +17,7 @@
         <line num="9" count="2" type="stmt"/>
         <line num="10" count="2" type="stmt"/>
       </file>
-      <file name="do-request-with-retry.ts" path="/Users/grzegorz/Documents/Code/playground/request-wrapper/do-request-with-retry.ts">
+      <file name="do-request-with-retry.ts" path="/data/data/com.termux/files/home/playground/may-throw-wrapper_2/do-request-with-retry.ts">
         <metrics statements="35" coveredstatements="33" conditionals="11" coveredconditionals="9" methods="4" coveredmethods="4"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -55,7 +55,7 @@
         <line num="34" count="6" type="stmt"/>
         <line num="35" count="6" type="stmt"/>
       </file>
-      <file name="request-wrapper.ts" path="/Users/grzegorz/Documents/Code/playground/request-wrapper/request-wrapper.ts">
+      <file name="request-wrapper.ts" path="/data/data/com.termux/files/home/playground/may-throw-wrapper_2/request-wrapper.ts">
         <metrics statements="61" coveredstatements="59" conditionals="11" coveredconditionals="9" methods="4" coveredmethods="4"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -119,7 +119,7 @@
         <line num="60" count="1" type="stmt"/>
         <line num="61" count="1" type="stmt"/>
       </file>
-      <file name="service-axios.ts" path="/Users/grzegorz/Documents/Code/playground/request-wrapper/service-axios.ts">
+      <file name="service-axios.ts" path="/data/data/com.termux/files/home/playground/may-throw-wrapper_2/service-axios.ts">
         <metrics statements="38" coveredstatements="38" conditionals="6" coveredconditionals="5" methods="2" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -161,9 +161,9 @@
         <line num="38" count="1" type="stmt"/>
       </file>
     </package>
-    <package name="request-wrapper.mocks">
+    <package name="may-throw-wrapper_2.mocks">
       <metrics statements="41" coveredstatements="41" conditionals="1" coveredconditionals="1" methods="0" coveredmethods="0"/>
-      <file name="handlers.ts" path="/Users/grzegorz/Documents/Code/playground/request-wrapper/mocks/handlers.ts">
+      <file name="handlers.ts" path="/data/data/com.termux/files/home/playground/may-throw-wrapper_2/mocks/handlers.ts">
         <metrics statements="11" coveredstatements="11" conditionals="1" coveredconditionals="1" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -177,7 +177,7 @@
         <line num="10" count="1" type="stmt"/>
         <line num="11" count="1" type="stmt"/>
       </file>
-      <file name="happy-path-data.ts" path="/Users/grzegorz/Documents/Code/playground/request-wrapper/mocks/happy-path-data.ts">
+      <file name="happy-path-data.ts" path="/data/data/com.termux/files/home/playground/may-throw-wrapper_2/mocks/happy-path-data.ts">
         <metrics statements="26" coveredstatements="26" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -206,7 +206,7 @@
         <line num="25" count="1" type="stmt"/>
         <line num="26" count="1" type="stmt"/>
       </file>
-      <file name="node.ts" path="/Users/grzegorz/Documents/Code/playground/request-wrapper/mocks/node.ts">
+      <file name="node.ts" path="/data/data/com.termux/files/home/playground/may-throw-wrapper_2/mocks/node.ts">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
