@@ -1,4 +1,4 @@
-export default [
+export const happyPathData = [
   {
     "userId": 1,
     "id": 1,
