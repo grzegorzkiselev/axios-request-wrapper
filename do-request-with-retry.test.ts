@@ -26,18 +26,18 @@ describe("Tecты попыток", () => {
     expect(mockFuncWithError.mock.calls.length).toBe(retryCount + 1);
   });
 
-  const Response: AxiosResponse = {
-    data: "succeed",
-    status: 200,
-    statusText: "",
-    headers: {},
-    config: { headers: new AxiosHeaders() },
-  };
-
   it("Успешно выполняется после ошибок", async () => {
-    const cb = () => Promise.resolve(Response);
+    const ResponseDummy: AxiosResponse = {
+      data: "succeed",
+      status: 200,
+      statusText: "",
+      headers: {},
+      config: { headers: new AxiosHeaders() },
+    };
 
-    const mockFuncWithError = jest.fn(cb);
+    const mockFuncWithError = jest.fn(
+      () => Promise.resolve(ResponseDummy),
+    );
 
     mockFuncWithError
       .mockReturnValueOnce(Promise.reject(null));
