@@ -43,7 +43,7 @@ describe("Tecты попыток", () => {
       doRequestWithRetry(
         mockFuncWithError,
         { retryCount },
-      )
+      ),
     ).resolves.toBe("succeed");
 
     expect(mockFuncWithError.mock.calls.length).toBe(errorCount + 1);
